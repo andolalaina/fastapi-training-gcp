@@ -13,8 +13,11 @@ from src.routers import classificationRouter
 
 app = FastAPI()
 
-# credentials = ee.ServiceAccountCredentials(SERVICE_ACCOUNT, SERVICE_KEY)
-credentials = compute_engine.Credentials(scopes=['https://www.googleapis.com/auth/earthengine'])
+if os.environ.get("_ENVIRONMENT") == "PRODUCTION":
+    credentials = compute_engine.Credentials(scopes=['https://www.googleapis.com/auth/earthengine'])
+else:
+    credentials = ee.ServiceAccountCredentials(SERVICE_ACCOUNT, SERVICE_KEY)
+
 ee.Initialize(credentials)
 
 app = FastAPI()
@@ -37,6 +40,12 @@ app.include_router(classificationRouter.router)
 
 @app.get("/")
 async def read_root() -> dict:
-
-    return {"message": "Hello ArkeUp"}
+    image = ee.Image("projects/agritech-local/assets/vhr_raw");
+    example_image = image.getThumbURL(params={
+        "dimensions": 256
+    })
+    return {
+        "message": "Hello ArkeUp",
+        "example_image": example_image
+    }
 
