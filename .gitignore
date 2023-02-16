@@ -1,0 +1,6 @@
+.venv
+.vscode
+.idea
+__pycache__
+.private-key.json
+*.h5

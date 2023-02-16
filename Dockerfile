@@ -6,8 +6,6 @@ COPY requirements.txt ./requirements.txt
 
 RUN pip install -r requirements.txt
 
-ARG SERVICE_ACCOUNT="your-service-account@mail.com"
-
 COPY . .
 
 EXPOSE 8000

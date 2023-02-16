@@ -1,7 +1,10 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+import os
 
 import ee
+from google.auth import compute_engine
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from src.data.constantes import SERVICE_ACCOUNT, SERVICE_KEY
@@ -10,14 +13,16 @@ from src.routers import classificationRouter
 
 app = FastAPI()
 
-credentials = ee.ServiceAccountCredentials(SERVICE_ACCOUNT, SERVICE_KEY)
+# credentials = ee.ServiceAccountCredentials(SERVICE_ACCOUNT, SERVICE_KEY)
+credentials = compute_engine.Credentials(scopes=['https://www.googleapis.com/auth/earthengine'])
 ee.Initialize(credentials)
 
 app = FastAPI()
 
 origins = [
     "http://localhost:3000",
-    "localhost:3000"
+    "localhost:3000",
+    "*"
 ]
 
 app.add_middleware(
@@ -32,6 +37,6 @@ app.include_router(classificationRouter.router)
 
 @app.get("/")
 async def read_root() -> dict:
-    
+
     return {"message": "Hello ArkeUp"}
 
